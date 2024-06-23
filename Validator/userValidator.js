@@ -1,3 +1,5 @@
+const { error } = require("console");
+
 function validateEmail (email) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
@@ -15,16 +17,29 @@ function validateId(id) {
     return Idregex.test(id);
 }
 
-function validate (Data) {
-    if (validateEmail(Data.Email) && validateZipCode(Data.Zip) && validateId(Data._Id_)){
-        return true ;
+function validateAge(age) {
+    if (typeof age == "number" && age >= 18 && age <= 70) {
+        return true;
     }
     else {
         return false;
     }
 }
 
+function userValidator (Data) {
+    const resultObj = {
+        Email : validateEmail(Data.Email),
+        Zip_Code : validateZipCode(Data.Zip_Code),
+        Age : validateAge(Data.Age),
+        _Id_ : validateId(Data._Id_),
+        All : this.Email && this.ZipCode && this.Age && this._Id_
+    }
+    
+    return resultObj ;
+}
+
 
 module.exports ={
-    validate
+    userValidator,
+    validateId
 }

@@ -38,7 +38,7 @@ const DAO = {
         /*
         Data 
         {
-            id : ********** ,
+            id : **********,
             change : {key1 : vlaue1 , key2 : value2 ....}  --- > key and vlaue which is need to be update
         }
         */
@@ -60,6 +60,7 @@ const DAO = {
         const client = await getMongoClientInstance();
         const collection = client.db("intern").collection("users");
         const result = await collection.deleteOne({ Id: _Id_ });
+        return result
     }
 }
 
