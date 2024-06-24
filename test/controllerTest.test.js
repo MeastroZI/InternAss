@@ -32,20 +32,7 @@ async function clearing() {
   }
 }
 
-describe('GET /listUsers', () => {
-  describe('Success', () => {
-    test('should get the response as an array of objects with Id property', async () => {
-      const response = await request(app).get('/listUsers');
-      expect(response.status).toBe(200); // Adjust status code expectation
-      expect(response.body.message).toEqual("All done"); // Check response structure
-      expect(response.body.reqData).toEqual(expect.any(Array));
-      response.body.reqData.forEach(user => {
-        expect(user).toEqual(expect.any(Object));
-        expect('Id' in user).toEqual(true); // Ensure 'Id' property exists in each user
-      });
-    });
-  });
-});
+
 
 describe('POST /creatUser', () => {
   test("successfully create the user ", async () => {
@@ -87,6 +74,21 @@ describe('POST /creatUser', () => {
   });
 
 
+});
+
+describe('GET /listUsers', () => {
+  describe('Success', () => {
+    test('should get the response as an array of objects with Id property', async () => {
+      const response = await request(app).get('/listUsers');
+      expect(response.status).toBe(200); // Adjust status code expectation
+      expect(response.body.message).toEqual("All done"); // Check response structure
+      expect(response.body.reqData).toEqual(expect.any(Array));
+      response.body.reqData.forEach(user => {
+        expect(user).toEqual(expect.any(Object));
+        expect('Id' in user).toEqual(true); // Ensure 'Id' property exists in each user
+      });
+    });
+  });
 });
 
 describe('PUT /updateUser/Id', () => {
