@@ -13,12 +13,15 @@ const userServices ={
         return result;
     },
     updateUser: async function (Data) {
-        if (Data.method == "PATCH" && "Id" in Data.change){
-            throw new Error("Id can't be change")
+        if (Data.method == "PATCH" && "_Id_" in Data.change){
+            throw new Error("Id can't be change cannont put the Id in data for PATCH req")
         }
-        else if(Data.method == "PUT" && ! ("Id" in Data.change)){
+        else if(Data.method == "PUT" && Data.change.Id == ''){
             throw new Error ("Id can't be null")
         }
+        else if (Data.method == "PUT" &&  Data.change.Id != Data.Id) {
+            throw new Error ("Id can't be change")
+        } 
         const result = await userModel.updateUser(Data);
         return result
     },

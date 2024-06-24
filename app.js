@@ -18,5 +18,10 @@ app.post('/creatUser' , userController.creatUser)
 
 
 app.listen(8000 , ()=>{
-    console.log("server is listeingin on 8000")
+    // console.log("server is listeingin on 8000")
 })
+
+
+module.exports = {
+    app
+}

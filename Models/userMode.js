@@ -13,7 +13,7 @@ const userModel = {
 
         const validationObj = userValidator(DTO);
         if (await DAO.getUser(DTO.Id) != null) {
-            throw new Error ("User with this Id is alredy present")
+            throw new Error ("User with this Id is already present")
         }
         if (validationObj.All) {
             const result = await DAO.creatuser(DTO);
@@ -25,13 +25,16 @@ const userModel = {
     },
     updateUser: async function (Data) {
         
+        if (await DAO.getUser(Data.Id) == null) {
+            throw new Error ("No user with this Id")
+        }
         const validationObj = userValidator(Data.change);
         if (!validateId(Data.Id)){       
-            return new Error("Id is not valid")
+            throw new  Error("Id is not valid")
         }   
         for (let key of validationTargets) {
             if ( (key in Data.change) && !validationObj[key]) {
-                throw  Error("Data is not valid")
+                throw new  Error("Data is not valid")
             }
         }
 
@@ -45,22 +48,27 @@ const userModel = {
     getUser: async function (Data) {
         // validating the data 
 
-        
+        if ( await DAO.getUser(Data.Id) == null) {
+            throw new Error("No user with this Id")
+        }
         if (validateId(Data.Id)) {
             return await DAO.getUser(Data.Id);
         }
         else {
-            throw new Error("Id is not valid")
+            throw new  Error("Id is not valid")
         }
     },
     deleteUser: async function (Data) {
         // validating the data 
+        if ( await DAO.getUser(Data.Id) == null) {
+            throw new Error("No user with this Id")
+        }
         if (validateId(Data.Id)){
             const result = await DAO.deleteUser(Data.Id);
             return result;
         }
         else  {
-            return new Error("Validation fail")
+            throw new Error("Validation fail")
         }
     }
 }

@@ -8,7 +8,7 @@ const userController = {
         try {
             const result = await userServices.listUser();
             const resDto = responseData(message, result)
-            res.status(201).json(resDto)
+            res.status(200).json(resDto)
 
         }
         catch (err) {

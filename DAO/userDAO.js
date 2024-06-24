@@ -58,7 +58,7 @@ const DAO = {
         const client = await getMongoClientInstance();
         const collection = client.db("intern").collection("users");
         const user = await collection.findOne({ Id: _Id_ });
-        console.log(user)
+        
         return user;
     },
 
