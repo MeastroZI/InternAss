@@ -1,5 +1,6 @@
 const {userModel} = require ("../Models/userMode")
 
+
 // currently i dont think we have any bussiness logic for the services 
 
 const userServices ={
@@ -8,23 +9,25 @@ const userServices ={
         return result;
     },
     creatUser: async function (DTO) {
-        userValidator(DTO);
-        const result = await userModel.creatuser(DTO);
+        const result = await userModel.creatUser(DTO);
         return result;
     },
     updateUser: async function (Data) {
-        userValidator({ ...Data.change, _Id_: Data._Id_ });
+        if (Data.method == "PATCH" && "Id" in Data.change){
+            throw new Error("Id can't be change")
+        }
+        else if(Data.method == "PUT" && ! ("Id" in Data.change)){
+            throw new Error ("Id can't be null")
+        }
         const result = await userModel.updateUser(Data);
         return result
     },
     getUser: async function (Data) {
-        userValidator(validateId(Data._Id_));
-        const result = userModel.getUser(Data._Id_);
+        const result = await userModel.getUser(Data);
         return result
     },
     deleteUser : async function (Data) {
-        userValidator(validateId(Data._Id_));
-        const result = userModel.deleteUser(Data._Id_);
+        const result = await userModel.deleteUser(Data);
         return result;
     }
 }

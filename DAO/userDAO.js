@@ -1,4 +1,4 @@
-const { getMongoClientInstance } = require("../Db_Config/db")
+const { getMongoClientInstance } = require("../utils/db")
 
 
 
@@ -13,7 +13,7 @@ const DAO = {
     listUser: async function () {
         const client = await getMongoClientInstance()
         const collection = client.db("intern").collection("users");
-        const result = collection.find({}).toArray();
+        const result = await collection.find({}).toArray();
         return result;
     },
     creatuser: async function (Data) {
@@ -31,10 +31,10 @@ const DAO = {
         */
         const client = await getMongoClientInstance();
         const collection = client.db("intern").collection("users");
-        const result = collection.insertOne(Data);
+        const result = await collection.insertOne(Data);
         return result;
     },
-    updateUser: async function (Data) {
+    updateUser: async function (Id , Data) {
         /*
         Data 
         {
@@ -44,14 +44,20 @@ const DAO = {
         */
         const client = await getMongoClientInstance();
         const collection = client.db("intern").collection("users");
-        const user = getUser(Data._Id_);
-        const result = collection.updateOne({ Id: Data.id }, { $set: Data.change })
+        const result = await collection.updateOne({ Id: Id }, { $set: Data })
         return result;
+    },
+    replaceUser : async function  (Id , data){
+        const client = await getMongoClientInstance();
+        const collection = client.db("intern").collection("users");
+        const result = await collection.replaceOne({ Id: Id } , data);
+        return result
+
     },
     getUser: async function (_Id_) {
         const client = await getMongoClientInstance();
         const collection = client.db("intern").collection("users");
-        const user = await collection.find({ Id: _Id_ });
+        const user = await collection.findOne({ Id: _Id_ });
         console.log(user)
         return user;
     },

@@ -6,9 +6,10 @@ function userDTO (Data) {
 // City
 // Zip code
 
+// can also be pass directly but as per assignment i need to show my understanding of the DTO
     let obj = {
         // will be handle by validator module;
-        Id : Data.Id ? Data.Id :"" ,
+        Id : Data._Id_ ? Data._Id_ :"" ,
         Email : Data.Email ? Data.Email : "",
         Name : Data.Name?Data.Name : "" ,
         Age : Data.Age ? Data.Age : "",
@@ -19,6 +20,15 @@ function userDTO (Data) {
     return obj ;
 }
 
+function updateUserDto (Id , Data , MTH) {
+    let obj = {
+        Id : Id?Id : "",
+        change : MTH=="PUT"?userDTO(Data):Data,
+        method : MTH
+    }
+    return obj
+}
+
 module.exports = {
-    userDTO
+    userDTO , updateUserDto
 }

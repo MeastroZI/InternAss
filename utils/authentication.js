@@ -1,8 +1,9 @@
 
-function authentication (req , res) {
+function authentication (req , res , next) {
     const userData = req.body.userData ;
-
-    if(userData.userName = 'admin' && userData.userName =='admin') {
+    console.log(req.body)
+    
+    if(userData.userName = 'admin' && userData.password =='admin') {
         next();
     }
     else {

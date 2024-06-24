@@ -1,8 +1,8 @@
-const { error } = require("console");
+
 const { DAO } = require("../DAO/userDAO")
 const { userValidator, validateId } = require("../Validator/userValidator")
 
-
+const validationTargets = ["Id" , "Email" , "Age" , "Zip_Code"]
 const userModel = {
     listUser: async function () {
         const result = await DAO.listUser();
@@ -11,49 +11,57 @@ const userModel = {
     creatUser: async function (DTO) {
         // validating the data 
 
-        const validateObj = userValidator(DTO);
-        if (validateObj.All) {
+        const validationObj = userValidator(DTO);
+        if (await DAO.getUser(DTO.Id) != null) {
+            throw new Error ("User with this Id is alredy present")
+        }
+        if (validationObj.All) {
             const result = await DAO.creatuser(DTO);
             return result;
         }
         else {
-            throw new error("Validation fail")
+            throw new Error("Validation fail")
         }
     },
     updateUser: async function (Data) {
-        // validating the data 
-
-        const validationObj = userValidator({ ...Data.change, _Id_: Data._Id_ });
-        for (let key in Data.change) {
-            if (!validatorObj[key]) {
-                throw new error("validation fail")
+        
+        const validationObj = userValidator(Data.change);
+        if (!validateId(Data.Id)){       
+            return new Error("Id is not valid")
+        }   
+        for (let key of validationTargets) {
+            if ( (key in Data.change) && !validationObj[key]) {
+                throw  Error("Data is not valid")
             }
         }
-        if (!validatorObj["_Id_"]) {
-            return new error("Validation fail")
+
+        if (Data.method == 'PUT') {
+            return await DAO.replaceUser(Data.Id , Data.change);
         }
-        const result = await DAO.updateUser(Data);
-        return result
+        else if (Data.method == 'PATCH'){
+            return await DAO.updateUser(Data.Id , Data.change);
+        }
     },
     getUser: async function (Data) {
         // validating the data 
 
-        const validattionObj = userValidator(validateId(Data._Id_));
-        if (!validattionObj["_Id_"]) {
-            return new error("Validation fail")
+        
+        if (validateId(Data.Id)) {
+            return await DAO.getUser(Data.Id);
         }
-        const result = DAO.getUser(Data._Id_);
-        return result
+        else {
+            throw new Error("Id is not valid")
+        }
     },
     deleteUser: async function (Data) {
         // validating the data 
-
-        const validattionObj = userValidator(validateId(Data._Id_));
-        if (!validattionObj["_Id_"]) {
-            return new error("Validation fail")
+        if (validateId(Data.Id)){
+            const result = await DAO.deleteUser(Data.Id);
+            return result;
         }
-        const result = DAO.deleteUser(Data._Id_);
-        return result;
+        else  {
+            return new Error("Validation fail")
+        }
     }
 }
 

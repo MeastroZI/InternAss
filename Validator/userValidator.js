@@ -27,12 +27,13 @@ function validateAge(age) {
 }
 
 function userValidator (Data) {
+    // Not able to think anything else :p 
     const resultObj = {
         Email : validateEmail(Data.Email),
         Zip_Code : validateZipCode(Data.Zip_Code),
         Age : validateAge(Data.Age),
-        _Id_ : validateId(Data._Id_),
-        All : this.Email && this.ZipCode && this.Age && this._Id_
+        Id : validateId(Data.Id),
+        All :  validateEmail(Data.Email) &&  validateZipCode(Data.Zip_Code) && validateAge(Data.Age) &&  validateId(Data.Id)
     }
     
     return resultObj ;

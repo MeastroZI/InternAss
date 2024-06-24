@@ -1,4 +1,4 @@
-const { userDTO } = require("../DTO/userDto");
+const { userDTO  , updateUserDto} = require("../DTO/userDto");
 const { responseData } = require("../DTO/responseDto")
 const { userServices } = require("../Services/userServices")
 
@@ -39,9 +39,9 @@ const userController = {
     updateUser: async function (req , res) {
         // validating the data 
         let message = "All done";
-        let data = req.body.reqData;
         try {
-            const result = await userServices.updateUser(data)
+            const reqDto = updateUserDto(req.params._Id_ , req.body.reqData , req.method)
+            const result = await userServices.updateUser(reqDto)
             const resDto = responseData(message, result)
             res.status(201).json(resDto)
         }
@@ -57,7 +57,8 @@ const userController = {
     },
     getUser: async function (req , res) {
         let message = "All done";
-        let data = req.body.reqData;
+        console.log(req.params)
+        let data = {Id: req.params._Id_}
         try {
             const result = await userServices.getUser(data)
             const resDto = responseData(message, result)
@@ -74,7 +75,7 @@ const userController = {
     },
     deleteUser: async function (req , res) {
         let message = "All done";
-        let data = req.body.reqData;
+        let data = {Id : req.params._Id_};
         try {
             const result = await userServices.deleteUser(data)
             const resDto = responseData(message, result)
