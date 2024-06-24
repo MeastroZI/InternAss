@@ -1,5 +1,7 @@
 const { MongoClient, ServerApiVersion , ObjectId} = require("mongodb");
-const uri = "mongodb+srv://Pu_Mato:PuMato12345678@cluster0.afmzbvm.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+require('dotenv').config();
+const uri = process.env.DBURL;
+console.log(uri)
 const connectionPool = []
 
 async function getMongoClientInstance() {
