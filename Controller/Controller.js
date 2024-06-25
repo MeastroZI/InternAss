@@ -8,7 +8,13 @@ const userController = {
         try {
             const result = await userServices.listUser();
             const resDto = responseData(message, result)
-            res.status(200).json(resDto)
+            if(req.method == "POST") {
+                res.status(200).json(resDto)
+            }
+            else {
+                const users = resDto.reqData
+                res.render('userData',  {users} )
+            }
 
         }
         catch (err) {

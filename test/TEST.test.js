@@ -32,10 +32,47 @@ async function clearing() {
   }
 }
 
-
-
 describe('POST /creatUser', () => {
-  test("successfully create the user ", async () => {
+  test("creat user with invalid Id", async () => {
+    const userData = {
+      userName: "admin",
+      password: "admin"
+    };
+    const reqData = {
+      "_Id_": "InValid",
+      "Email": "25eeee2@gmail.com",
+      "Name": "aa",
+      "Age": 22,
+      "City": "asde",
+      "Zip_Code": "85413654"
+    };
+
+    expect(await clearing()).toEqual(true);
+    const response = await request(app).post('/creatUser').send({ userData, reqData });
+    expect(response.status).toBe(501); // Adjust status code expectation
+    expect(response.body.message).toEqual("\"Id\" with value \"InValid\" fails to match the required pattern: /^[a-zA-Z]{3}\\d{5}$/"
+    );
+  })
+  test("creat user with invalid Zip_Code", async () => {
+    const userData = {
+      userName: "admin",
+      password: "admin"
+    };
+    const reqData = {
+      "_Id_": "New12345",
+      "Email": "25eeee2@gmail.com",
+      "Name": "aa",
+      "Age": 22,
+      "City": "asde",
+      "Zip_Code": "123456789"
+    };
+    expect(await clearing()).toEqual(true);
+    const response = await request(app).post('/creatUser').send({ userData, reqData });
+    expect(response.status).toBe(501); // Adjust status code expectation
+    expect(response.body.message).toEqual("\"Zip_Code\" with value \"123456789\" fails to match the required pattern: /^\\d{8}$/"
+    );
+  })
+  test("successfully create the user", async () => {
     const userData = {
       userName: "admin",
       password: "admin"
@@ -76,22 +113,47 @@ describe('POST /creatUser', () => {
 
 });
 
-describe('GET /listUsers', () => {
-  describe('Success', () => {
-    test('should get the response as an array of objects with Id property', async () => {
-      const response = await request(app).get('/listUsers');
-      expect(response.status).toBe(200); // Adjust status code expectation
-      expect(response.body.message).toEqual("All done"); // Check response structure
-      expect(response.body.reqData).toEqual(expect.any(Array));
-      response.body.reqData.forEach(user => {
-        expect(user).toEqual(expect.any(Object));
-        expect('Id' in user).toEqual(true); // Ensure 'Id' property exists in each user
-      });
+describe('POST /listUserJson', () => {
+
+  test('should get the response as an array of objects with Id property', async () => {
+    const userData = {
+      userName: "admin",
+      password: "admin"
+    };
+    const response = await request(app).post('/listUsersJson').send({ userData });
+    expect(response.status).toBe(200); // Adjust status code expectation
+    expect(response.body.message).toEqual("All done"); // Check response structure
+    expect(response.body.reqData).toEqual(expect.any(Array));
+    response.body.reqData.forEach(user => {
+      expect(user).toEqual(expect.any(Object));
+      expect('Id' in user).toEqual(true); // Ensure 'Id' property exists in each user
     });
   });
+
 });
 
 describe('PUT /updateUser/Id', () => {
+  test("updating the userData with invalid data", async () => {
+    const userData = {
+      userName: "admin",
+      password: "admin"
+    };
+    const reqData = {
+      "_Id_": "New12345",
+      "Email": "WrongEmail",
+      "Name": "newName",
+      "Age": "invalid Age",
+      "City": "newCity",
+      "Zip_Code": "123456789"
+    };
+    const response = await request(app).put('/updateUser/New12345').send({ userData, reqData });
+    expect(response.status).toBe(501);
+    expect(response.body.message).toEqual(
+      "\"Email\" with value \"WrongEmail\" fails to match the required pattern: /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/,\"Zip_Code\" with value \"123456789\" fails to match the required pattern: /^\\d{8}$/,\"Age\" must be a number");
+   
+    
+
+  })
   test("updating the userData", async () => {
     const userData = {
       userName: "admin",
@@ -122,7 +184,7 @@ describe('PUT /updateUser/Id', () => {
     expect(response.body.reqData.modifiedCount).toEqual(1)
 
   })
-  test("Id can't be null", async () => {
+  test("Id can't be null in Data", async () => {
     const userData = {
       userName: "admin",
       password: "admin"
@@ -134,10 +196,6 @@ describe('PUT /updateUser/Id', () => {
       "City": "newCity",
       "Zip_Code": "85413654"
     };
-    // {
-    //   "reqData": {},
-    //   "message": "Data is not valid"
-    // }
     const response = await request(app).put('/updateUser/New12345').send({ userData, reqData });
     expect(response.status).toBe(501);
     expect(response.body.message).toEqual("Id can't be null");
@@ -159,7 +217,7 @@ describe('PUT /updateUser/Id', () => {
     expect(response.status).toBe(501);
     expect(response.body.message).toEqual("Id can't be change");
   })
-  test("Updaing user which is not present", async () => {
+  test("Should not update user which is not present", async () => {
     const userData = {
       userName: "admin",
       password: "admin"
@@ -230,7 +288,7 @@ describe('GET /getUser/Id', () => {
     expect(response.body.reqData.Id).toEqual("New12345")
     expect(response.body.message).toEqual("All done");
   })
-  
+
   test("geting the user", async () => {
     const userData = {
       userName: "admin",
@@ -240,7 +298,7 @@ describe('GET /getUser/Id', () => {
     expect(response.status).toBe(501);
     expect(response.body.message).toEqual("No user with this Id");
   })
-  
+
 })
 
 describe('DELETE /deleteUser', () => {
@@ -264,4 +322,6 @@ describe('DELETE /deleteUser', () => {
     expect(response.body.message).toEqual("No user with this Id")
   })
 });
+
+
 

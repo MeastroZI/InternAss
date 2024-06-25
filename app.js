@@ -7,10 +7,12 @@ require('dotenv').config();
 
 
 console.log(process.env.DBURL)
+app.set('view engine', 'ejs');
 app.use(express.json());
 app.use(authentication)
 
 app.get('/listUsers' , userController.listUser) 
+app.post('/listUsersJson' , userController.listUser) 
 app.get('/getUser/:_Id_' , userController.getUser)
 app.put('/updateUser/:_Id_', userController.updateUser)
 app.patch('/updateUser/:_Id_', userController.updateUser)
